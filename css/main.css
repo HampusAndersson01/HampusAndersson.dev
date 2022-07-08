@@ -1,14 +1,12 @@
 .main div {
   height: calc(100vh - var(--nav-height) - 15px);
-}
-.main {
-  margin-top: 7vh;
-}
-#home {
   display: flex;
   justify-content: center;
   flex-direction: row;
   align-items: flex-start;
+}
+.main {
+  margin-top: 7vh;
 }
 #title {
   width: 40vw;
