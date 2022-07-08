@@ -5,13 +5,47 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hampus Andersson</title>
+    <script
+      src="https://kit.fontawesome.com/151fd28c08.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="css/nav.css" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/scrollbar.css" />
   </head>
   <body>
-    <p>
-      Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae
-      molestias doloremque pariatur corporis quod, eligendi, odio repellat
-      molestiae dolore totam exercitationem. Iste aliquam quia, et fugit
-      adipisci pariatur amet consequuntur.
-    </p>
+    <nav class="navigation">
+      <ul id="navMainLinks">
+        <li>
+          <button onclick="scrollfunction('home')">Home</button>
+        </li>
+        <li>
+          <button onclick="scrollfunction('web')" class="">Web</button>
+        </li>
+        <li>
+          <button onclick="scrollfunction('python')" class="">Python</button>
+        </li>
+        <li><button onclick="scrollfunction('c#')" class="">C#</button></li>
+      </ul>
+      <ul class="navLinks">
+        <li>
+          <a href="https://github.com/HampusAndersson01" target="_blank">
+            <i class="fa-brands fa-github-square fa-xl"></i>
+          </a>
+        </li>
+        <li>
+          <a href="https://linkedin.com/in/hampus-a-0957b9140" target="_blank">
+            <i class="fa-brands fa-linkedin fa-xl"></i>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <div class="main">
+      <div id="home"><h1 id="title">Hampus Andersson</h1></div>
+      <div id="web"></div>
+      <div id="python"></div>
+      <div id="c#"></div>
+    </div>
+    <script src="js/main.js"></script>
   </body>
 </html>
