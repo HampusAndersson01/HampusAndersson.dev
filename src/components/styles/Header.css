@@ -1,0 +1,28 @@
+:root {
+  --icon-radius: 4em;
+}
+.homeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--background-color);
+}
+.darkModeButton {
+  position: fixed;
+  top: 5vh;
+  right: 5vw;
+  z-index: 0;
+  border: none;
+  width: var(--icon-radius);
+  height: var(--icon-radius);
+  padding: 0;
+  background-color: transparent;
+}
+.darkModeButton .icon {
+  color: var(--dark-mode-button-color);
+  width: calc(var(--icon-radius) / 2);
+  height: calc(var(--icon-radius) / 2);
+}

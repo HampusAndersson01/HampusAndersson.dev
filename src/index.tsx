@@ -1,14 +1,10 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import {
-  createBrowserRouter,
-  createHashRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createHashRouter, RouterProvider } from "react-router-dom";
 import AboutPage from "./pages/AboutPage";
 import HomePage from "./pages/HomePage";
 import "./index.css";
-import { DarkModeContext, DarkModeProvider } from "./context/DarkMode";
+import { DarkModeProvider } from "./context/DarkMode";
 
 const router = createHashRouter(
   [
