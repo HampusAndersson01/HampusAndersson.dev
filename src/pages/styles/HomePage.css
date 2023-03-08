@@ -31,7 +31,7 @@
   top: 5vh;
   left: 50%;
   margin: 0;
-  transform: translate(-50%, -25%);
+  transform: translate(-50%, 0);
   height: 5em;
   display: flex;
   align-items: center;
