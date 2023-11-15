@@ -1,0 +1,35 @@
+/* Light mode color scheme */
+:root {
+  --background-color: #f0f0f0;
+  --text-color: #333333;
+
+  --navBar-background-color: #1a1e23;
+  --navBar-image-overlay: rgba(0, 0, 0, 0.6);
+  --navBar-text-color: white;
+  --navBar-line-color: hsla(210, 29%, 24%, 0.3);
+  --navBar-burger-color: hsla(210, 29%, 24%, 0.3);
+
+  --dark-mode-button-color: hsla(210, 29%, 24%, 0.3);
+}
+
+/* Dark mode color scheme */
+.dark-mode {
+  --background-color: #333333;
+  --text-color: #f0f0f0;
+
+  --navBar-background-color: #1a1e23;
+  --navBar-image-overlay: rgba(0, 0, 0, 0.6);
+  --navBar-text-color: white;
+  --navBar-line-color: hsla(210, 29%, 24%, 0.3);
+  --navBar-burger-color: hsl(0, 0%, 50%);
+
+  --dark-mode-button-color: white;
+}
+
+/* roboto font */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+
+* {
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+}

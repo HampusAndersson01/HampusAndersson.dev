@@ -1,0 +1,29 @@
+.logoContainer {
+  position: fixed;
+  top: 5vh;
+  left: 50%;
+  margin: 0;
+  transform: translate(-50%, 0);
+  height: 5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: transparent;
+  filter: drop-shadow(0 0 0.1em var(--text-color));
+  font-variant-caps: small-caps;
+
+  max-height: 200px;
+}
+.logoContainer h1 {
+  -webkit-text-stroke-width: 0.75px;
+  -webkit-text-stroke-color: var(--text-color);
+  margin: 0;
+}
+
+.logoContainer .logo {
+  color: var(--text-color);
+  width: 6em;
+  height: 6em;
+  fill: var(--text-color);
+}
