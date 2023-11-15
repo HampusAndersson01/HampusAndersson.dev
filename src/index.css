@@ -7,7 +7,9 @@
   --navBar-image-overlay: rgba(0, 0, 0, 0.6);
   --navBar-text-color: white;
   --navBar-line-color: hsla(210, 29%, 24%, 0.3);
-  --navBar-burger-color: hsla(210, 29%, 24%, 0.3);
+  --navBar-burger-color: hsla(210, 29%, 24%, 0.3)
+  
+  --accent-color: #0077cc; ;
 
   --dark-mode-button-color: hsla(210, 29%, 24%, 0.3);
 }
@@ -22,6 +24,8 @@
   --navBar-text-color: white;
   --navBar-line-color: hsla(210, 29%, 24%, 0.3);
   --navBar-burger-color: hsl(0, 0%, 50%);
+
+  --accent-color: #0077cc;
 
   --dark-mode-button-color: white;
 }
