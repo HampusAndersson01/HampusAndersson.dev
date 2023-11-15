@@ -5,6 +5,7 @@ import AboutPage from "./pages/AboutPage";
 import HomePage from "./pages/HomePage";
 import "./index.css";
 import { DarkModeProvider } from "./context/DarkMode";
+import { Analytics } from '@vercel/analytics/react';
 
 const router = createHashRouter(
   [
@@ -23,5 +24,6 @@ const router = createHashRouter(
 createRoot(document.getElementById("root") as HTMLElement).render(
   <DarkModeProvider>
     <RouterProvider router={router} />
+    <Analytics/>
   </DarkModeProvider>
 );
