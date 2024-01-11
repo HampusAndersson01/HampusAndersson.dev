@@ -1,0 +1,52 @@
+/* AboutMe.css */
+
+.about-me-container {
+  display: flex;
+  align-items: center;
+  width: 80vw;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.about-me-side-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  user-select: none;
+}
+
+.profile-image {
+  width: 100%;
+  border-radius: 50%;
+}
+
+.social-icons-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.social-icon {
+  font-size: 2em;
+}
+
+.text-container {
+  padding: 0 20px;
+}
+
+p {
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+#github-icon svg {
+  color: #f0f0f0;
+}
+
+#linkedin-icon svg {
+  color: #0077cc;
+}
+
+

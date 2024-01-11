@@ -1,21 +1,5 @@
-/* Light mode color scheme */
-:root {
-  --background-color: #f0f0f0;
-  --text-color: #333333;
-
-  --navBar-background-color: #1a1e23;
-  --navBar-image-overlay: rgba(0, 0, 0, 0.6);
-  --navBar-text-color: white;
-  --navBar-line-color: hsla(210, 29%, 24%, 0.3);
-  --navBar-burger-color: hsla(210, 29%, 24%, 0.3)
-  
-  --accent-color: #0077cc; ;
-
-  --dark-mode-button-color: hsla(210, 29%, 24%, 0.3);
-}
-
 /* Dark mode color scheme */
-.dark-mode {
+.root {
   --background-color: #333333;
   --text-color: #f0f0f0;
 
@@ -28,6 +12,14 @@
   --accent-color: #0077cc;
 
   --dark-mode-button-color: white;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  background-color: #333333;
+  color: #f0f0f0;
 }
 
 /* roboto font */

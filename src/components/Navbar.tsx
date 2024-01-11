@@ -1,18 +1,8 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import "./styles/Navbar.scss";
-
-interface ImageData {
-  label: string;
-  src: string;
-}
-
-const images: ImageData[] = [
-  { label: "lorem", src: "https://picsum.photos/200/300" },
-  { label: "ipsum", src: "https://picsum.photos/200/300" },
-  { label: "lorem2", src: "https://picsum.photos/200/300" },
-  { label: "ipsum2", src: "https://picsum.photos/200/300" },
-];
+import React, { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
+import "./styles/Navbar.css";
+import UseAnimations from "react-useanimations";
+import menu4 from "react-useanimations/lib/menu4";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,60 +10,54 @@ export default function Navbar() {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const pages = [
+    {
+      label: "Home",
+      path: "/",
+    },
+    {
+      label: "Portfolio",
+      path: "/portfolio",
+    },
+  ];
+
+  // get element from class name and simulate click
+  function simulateClick() {
+    const menu = document.getElementById("menu-icon");
+    menu?.click();
+  }
+
   return (
     <>
-      <div>
-        <input
-          type="checkbox"
-          id="burger-toggle"
-          checked={isMenuOpen}
-          onChange={toggleMenu}
+      <div className="navbar-container" id={isMenuOpen ? "open" : "closed"}>
+        <UseAnimations
+          onClick={() => toggleMenu()}
+          animation={menu4}
+          size={64}
+          strokeColor="#f0f0f0"
+          className="menu-icon"
+          id="menu-icon"
         />
-        <label htmlFor="burger-toggle" className="burger-menu">
-          <div className="line"></div>
-          <div className="line"></div>
-          <div className="line"></div>
-        </label>
-        <div className={`menu ${isMenuOpen ? "open" : ""}`}>
-          <div className="menu-inner">
-            <ul className="menu-nav">
-              <li className="menu-nav-item">
-                <Link className="menu-nav-link" to="/">
-                  Home
-                </Link>
-              </li>
-              <li className="menu-nav-item">
-                <Link className="menu-nav-link" to="/about">
-                  About
-                </Link>
-              </li>
-              <li className="menu-nav-item">
-                <Link className="menu-nav-link" to="/">
-                  Home
-                </Link>
-              </li>
-              <li className="menu-nav-item">
-                <Link className="menu-nav-link" to="/">
-                  Home
-                </Link>
-              </li>
-            </ul>
-            <div className="gallery">
-              <div className="title">
-                <p>Projects</p>
-              </div>
-              <div className="images">
-                {images.map((image) => (
-                  <a className="image-link" href="#" key={image.label}>
-                    <div className="image" data-label={image.label}>
-                      <img src={image.src} alt="" />
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </div>
+      </div>
+      <div className={`menu ${isMenuOpen ? "open" : ""}`}>
+        {pages.map((page, index) => (
+          <div className="menu-item" key={index}>
+            <NavLink
+              to={page.path}
+              className={({ isActive, isPending }) =>
+                isPending
+                  ? "pending"
+                  : isActive
+                  ? "menu-item active"
+                  : "menu-item"
+              }
+              onClick={simulateClick}
+            >
+              {page.label}
+            </NavLink>
           </div>
-        </div>
+        ))}
       </div>
     </>
   );
