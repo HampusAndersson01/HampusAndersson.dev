@@ -8,6 +8,11 @@ declare module "*.png" {
   export = value;
 }
 
+declare module "*.webp" {
+  const value: any;
+  export = value;
+}
+
 declare module "react-useanimations" {
   import { FC } from "react";
 

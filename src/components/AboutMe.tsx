@@ -1,7 +1,6 @@
 import React from "react";
 import "./styles/AboutMe.css";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
-import Portrait from "../assets/Portrait tansparent.png";
+import Portrait from "../assets/Portrait tansparent.webp";
 import UseAnimations from "react-useanimations";
 import github from "react-useanimations/lib/github";
 import linkedin from "react-useanimations/lib/linkedin";
