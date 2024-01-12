@@ -4,8 +4,8 @@ import Portfolio from "../components/Portfolio";
 const PortfolioPage: React.FC = () => {
   const projects = [
     {
-      title: "Personal Site",
-      description: "My personal site.",
+      title: "HampusAndersson.dev",
+      description: "This site.",
       languages: ["React", "TypeScript"],
       githubLink: "https://github.com/HampusAndersson01/PersonalSite",
       category: "Web Development",
