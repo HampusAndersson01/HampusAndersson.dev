@@ -52,11 +52,7 @@ const PortfolioPage: React.FC = () => {
       category: "Web Development",
     },
   ];
-  return (
-    <div>
-      <Portfolio projects={projects} />
-    </div>
-  );
+  return <Portfolio projects={projects} />;
 };
 
 export default PortfolioPage;

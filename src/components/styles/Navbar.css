@@ -17,10 +17,11 @@
 
 .navbar-container {
   position: fixed;
-  top: calc(var(--header-height) / 2);
+  top: clamp(calc(175px / 2), calc(var(--header-height) / 2), 100vh);
+
   left: calc(var(--header-height) / 2);
   transform: translateY(-50%) translateX(-50%);
-  z-index: 101;
+  z-index: 102;
   overflow: hidden;
 }
 
@@ -64,4 +65,15 @@
 .menu-item a:hover {
   background-color: #f0f0f0;
   color: #000;
+}
+
+/* When window is less than 600px wide move container closer to edge*/
+@media (max-width: 600px) {
+  .navbar-container {
+    left: 0;
+    transform: translateY(-50%);
+  }
+  .menu {
+    flex-direction: column;
+  }
 }

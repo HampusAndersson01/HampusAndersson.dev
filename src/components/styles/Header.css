@@ -1,6 +1,6 @@
 :root {
   --icon-radius: 4em;
-  --header-height: 15vh;
+  --header-height: 175px;
 }
 
 header {
@@ -8,10 +8,10 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  height: var(--header-height);
   background-color: var(--background-color);
   z-index: 1;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: var(--header-height);
 }

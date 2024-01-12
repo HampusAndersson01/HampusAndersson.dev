@@ -10,11 +10,12 @@ import Header from "./components/Header";
 createRoot(document.getElementById("root") as HTMLElement).render(
   <Router>
     <Header />
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/portfolio" element={<PortfolioPage />} />
-    </Routes>
-
+    <div className="main">
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/portfolio" element={<PortfolioPage />} />
+      </Routes>
+    </div>
     <Analytics />
   </Router>
 );
