@@ -10,9 +10,9 @@
 }
 
 .portfolio-item {
-  width: 20vw;
-  min-width: 190px;
-  min-height: 20vw;
+  width: clamp(200px, 20vw, 400px);
+  height: clamp(280px, 27vw, 400px);
+  min-height: fit-content;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -47,7 +47,7 @@
 }
 
 .portfolio-item h1 {
-  font-size: 1rem;
+  font-size: clamp(1rem, 1.5vw, 2rem);
   margin-bottom: 5px;
   color: #333;
 }
