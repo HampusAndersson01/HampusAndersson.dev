@@ -2,4 +2,4 @@
 
 ## A portfolio of my work
 
-### [Portfolio](https://hampusandersson.me/)
+### [Portfolio](https://hampusandersson.dev/)
