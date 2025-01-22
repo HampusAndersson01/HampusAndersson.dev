@@ -14,7 +14,7 @@ export default function Contact() {
       <h2 className="text-4xl font-bold mb-12">Get in Touch</h2>
       <div className="flex justify-center space-x-8">
         <motion.a
-          href="https://github.com/yourusername"
+          href="https://github.com/hampusandersson01"
           target="_blank"
           rel="noopener noreferrer"
           whileHover={{ scale: 1.1 }}
@@ -24,7 +24,7 @@ export default function Contact() {
           <FaGithub />
         </motion.a>
         <motion.a
-          href="https://linkedin.com/in/yourusername"
+          href="https://linkedin.com/in/hampusandersson01"
           target="_blank"
           rel="noopener noreferrer"
           whileHover={{ scale: 1.1 }}
@@ -34,7 +34,7 @@ export default function Contact() {
           <FaLinkedin />
         </motion.a>
         <motion.a
-          href="mailto:your.email@example.com"
+          href="mailto:hampe.01@hotmail.com"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           className="text-4xl text-gray-300 hover:text-white transition-colors"
