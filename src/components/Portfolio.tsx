@@ -8,6 +8,7 @@ interface PortfolioItemProps {
   languages: string[];
   githubLink: string;
   demoLink?: string;
+  image?: string; // Add image field
 }
 
 const PortfolioItem: React.FC<PortfolioItemProps> = ({
@@ -16,6 +17,7 @@ const PortfolioItem: React.FC<PortfolioItemProps> = ({
   languages,
   githubLink,
   demoLink,
+  image, // Add image prop
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
@@ -34,6 +36,7 @@ const PortfolioItem: React.FC<PortfolioItemProps> = ({
   return (
     <div className="portfolio-item">
       <h1>{title}</h1>
+      {image && <img src={image} alt={`${title} screenshot`} />} {/* Add image rendering */}
       <div className={`description-container ${isExpanded ? "expanded" : ""}`}>
         <p ref={descriptionRef} className={isExpanded ? "expanded" : ""}>{description}</p>
         {isOverflowing && (
@@ -80,6 +83,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ projects }) => {
           languages={project.languages}
           githubLink={project.githubLink}
           demoLink={project.demoLink}
+          image={project.image} // Pass image prop
         />
       ))}
     </div>
