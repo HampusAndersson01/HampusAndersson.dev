@@ -16,6 +16,7 @@ interface Project {
 
 export default function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState<boolean>(true); // Add loading state
   const blacklistedRepos = ["CV", "HampusAndersson01", "HampusPortfolio", "Prog1_Slutarbete"];
 
   useEffect(() => {
@@ -37,6 +38,7 @@ export default function Projects() {
             console.log("Using cached projects");
             console.log("Cached projects found:", cachedProjects);
             setProjects(cachedProjects);
+            setLoading(false); // Set loading to false
             return;
           }
         }
@@ -76,9 +78,13 @@ export default function Projects() {
         const formattedProjects: Project[] = await Promise.all(filteredData.map(fetchRepoDetails));
 
         // Cache projects in Firestore
-        const cachePromises = formattedProjects.map(project =>
-          setDoc(doc(projectsCollection, project.title), project)
-        );
+        const cachePromises = formattedProjects.map(project => {
+          const projectData = { ...project };
+          if (projectData.image === undefined) {
+            delete projectData.image;
+          }
+          return setDoc(doc(projectsCollection, project.title), projectData);
+        });
         await Promise.all(cachePromises);
 
         // Update the last updated timestamp
@@ -86,8 +92,11 @@ export default function Projects() {
 
         // Update state
         setProjects(formattedProjects);
+        console.log("Formatted projects:", formattedProjects); // Add this line
       } catch (error) {
         console.error("Error fetching projects:", error);
+      } finally {
+        setLoading(false); // Set loading to false
       }
     };
 
@@ -102,48 +111,56 @@ export default function Projects() {
       className="py-20"
     >
       <h2 className="text-4xl font-bold mb-12 text-center">Projects</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {projects.map((project, index) => (
-          <motion.div
-            key={project.title}
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: index * 0.1, duration: 0.3 }}
-            className="bg-gray-800 rounded-lg overflow-hidden shadow-lg"
-          >
-            {project.image && (
-              <img
-                src={project.image}
-                alt={project.title}
-                width={300}
-                height={200}
-                className="w-full h-48 object-cover"
-              />
-            )}
-            <div className="p-6">
-              <h3 className="text-2xl font-semibold mb-2">{project.title}</h3>
-              <p className="text-gray-400">{project.description}</p>
-              <div className="flex flex-wrap mt-4">
-                {project.languages.map((language, index) => (
-                  <span key={index} className="bg-gray-700 text-gray-300 px-2 py-1 rounded mr-2 mb-2">
-                    {language}
-                  </span>
-                ))}
-              </div>
-              <div className="mt-4">
-                <a href={project.githubLink} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline mr-4">
-                  GitHub
-                </a>
-                {project.demoLink && (
-                  <a href={project.demoLink} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">
-                    Demo
-                  </a>
+      {loading ? ( // Display loading message or spinner
+        <p className="text-center text-gray-400">Loading projects...</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {projects.length > 0 ? (
+            projects.map((project, index) => (
+              <motion.div
+                key={project.title}
+                initial={{ y: 50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: index * 0.1, duration: 0.3 }}
+                className="bg-gray-800 rounded-lg overflow-hidden shadow-lg"
+              >
+                {project.image && (
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    width={300}
+                    height={200}
+                    className="w-full h-48 object-cover"
+                  />
                 )}
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+                <div className="p-6">
+                  <h3 className="text-2xl font-semibold mb-2">{project.title}</h3>
+                  <p className="text-gray-400">{project.description}</p>
+                  <div className="flex flex-wrap mt-4">
+                    {project.languages.map((language, index) => (
+                      <span key={index} className="bg-gray-700 text-gray-300 px-2 py-1 rounded mr-2 mb-2">
+                        {language}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="mt-4">
+                    <a href={project.githubLink} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline mr-4">
+                      GitHub
+                    </a>
+                    {project.demoLink && (
+                      <a href={project.demoLink} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">
+                        Demo
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            ))
+          ) : (
+            <p className="text-center text-gray-400">No projects found.</p>
+          )}
+        </div>
+      )}
     </motion.section>
   );
 }
