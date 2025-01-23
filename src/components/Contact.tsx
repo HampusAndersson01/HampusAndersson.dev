@@ -9,9 +9,9 @@ export default function Contact() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="py-20 text-center"
+      className="py-12 text-center bg-gradient-to-br from-gray-800 to-gray-700 text-white"
     >
-      <h2 className="text-4xl font-bold mb-12">Get in Touch</h2>
+      <h2 className="text-4xl font-bold mb-8">Get in Touch</h2>
       <div className="flex justify-center space-x-8">
         <motion.a
           href="https://github.com/hampusandersson01"
