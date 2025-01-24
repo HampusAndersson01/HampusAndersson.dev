@@ -67,7 +67,7 @@ export default function HomePage() {
     } else if (nextSection.more) {
       const currentY = window.scrollY;
       window.scrollTo({
-        top: currentY + window.innerHeight,
+        top: currentY + window.innerHeight * 0.8, // Scroll 80% of window height
         behavior: "smooth",
       });
     } else {
