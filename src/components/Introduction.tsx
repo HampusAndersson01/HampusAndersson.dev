@@ -44,8 +44,7 @@ export default function Introduction() {
         transition={{ delay: 0.5, duration: 0.5 }}
         className="text-xl max-w-2xl mx-auto"
       >
-        Passionate about creating efficient and scalable systems. With expertise in various technologies,
-        I bring innovative solutions to complex problems.
+        Passionate about creating efficient and scalable systems using Node.js, JavaScript, React, TypeScript, Python, and .NET. With expertise in various technologies, I bring innovative solutions to complex problems.
       </motion.p>
     </motion.section>
   )
