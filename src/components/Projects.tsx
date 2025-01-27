@@ -248,6 +248,9 @@ export default function Projects() {
         </div>
       )}
       <h2 className="text-4xl font-bold mb-12 text-center">Projects</h2>
+      <p className="text-center mb-8 text-lg font-medium text-gray-300 bg-gray-800 p-4 rounded-lg shadow-md">
+        Node.js, JavaScript, React, TypeScript, .NET, and more.
+      </p>
       {loading ? ( // Display loading message or spinner
         <p className="text-center text-gray-400">Loading projects...</p>
       ) : (

@@ -9,7 +9,10 @@ import { ReactComponent as Logo } from "../assets/logo.svg";
 
 export const metadata: Metadata = {
   title: "Hampus Andersson - System Developer Portfolio",
-  description: "Showcasing my skills and projects as a system developer",
+  description:
+    "Showcasing my skills and projects as a system developer specializing in Node.js, JavaScript, React, TypeScript, and .NET.",
+  keywords:
+    "Node.js, JavaScript, React, TypeScript, .NET, system developer, dev, portfolio, projects, skills",
 };
 
 export default function HomePage() {
@@ -91,6 +94,18 @@ export default function HomePage() {
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    const metaKeywords = document.createElement("meta");
+    metaKeywords.name = "keywords";
+    metaKeywords.content =
+      "Node.js, JavaScript, React, TypeScript, .NET, system developer, dev, portfolio, projects, skills";
+    document.head.appendChild(metaKeywords);
+
+    return () => {
+      document.head.removeChild(metaKeywords);
     };
   }, []);
 
