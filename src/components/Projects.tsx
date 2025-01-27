@@ -109,8 +109,6 @@ export default function Projects() {
           (doc) => doc.data() as Project
         );
         if (cachedProjects.length > 0) {
-          console.log("Using cached projects");
-          console.log("Cached projects found:", cachedProjects);
           setProjects(cachedProjects);
           setLoading(false); // Set loading to false
           return;
@@ -169,7 +167,6 @@ export default function Projects() {
       const filteredData = githubData.filter(
         (repo) => !blacklistedRepos.includes(repo.name)
       );
-      console.log("Filtered data:", filteredData);
       const formattedProjects: Project[] = await Promise.all(
         filteredData.map(fetchRepoDetails)
       );
@@ -198,7 +195,6 @@ export default function Projects() {
       // Update state and cache
       setProjects(formattedProjects);
       saveToCache(formattedProjects);
-      console.log("Formatted projects:", formattedProjects); // Add this line
     } catch (error) {
       console.error("Error fetching projects:", error);
       setError("Failed to load projects. Please try again later.");
