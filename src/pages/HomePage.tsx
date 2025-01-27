@@ -4,10 +4,11 @@ import Introduction from "../components/Introduction";
 import Skills from "../components/Skills";
 import Projects from "../components/Projects";
 import Contact from "../components/Contact";
-import { doc } from "firebase/firestore";
+import headshot from "../assets/headshot.png";
+import { ReactComponent as Logo } from "../assets/logo.svg";
 
 export const metadata: Metadata = {
-  title: "Your Name - System Developer Portfolio",
+  title: "Hampus Andersson - System Developer Portfolio",
   description: "Showcasing my skills and projects as a system developer",
 };
 
@@ -95,7 +96,17 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+      <div className="absolute top-4 left-4">
+        <Logo className="w-16 h-16 filter invert" />
+      </div>
       <div className="max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <div className="flex justify-center mb-8">
+          <img
+            src={headshot}
+            alt="Hampus Andersson"
+            className="w-28 h-28 rounded-full border-4 border-gray-700 shadow-lg object-cover"
+          />
+        </div>
         <div id="introduction">
           <Introduction />
         </div>
