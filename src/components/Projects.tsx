@@ -14,6 +14,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { FaSearchPlus } from "react-icons/fa";
+import { getAuth, signInAnonymously } from "firebase/auth";
 
 interface Project {
   title: string;
@@ -197,7 +198,11 @@ export default function Projects() {
       saveToCache(formattedProjects);
     } catch (error) {
       console.error("Error fetching projects:", error);
-      setError("Failed to load projects. Please try again later.");
+      if ((error as any).code === "permission-denied") {
+        setError("You do not have permission to access the projects data.");
+      } else {
+        setError("Failed to load projects. Please try again later.");
+      }
     } finally {
       setLoading(false); // Set loading to false
     }
@@ -205,6 +210,21 @@ export default function Projects() {
 
   // Add console command to force update projects
   useEffect(() => {
+    // Ensure frontend checks domain before Firestore requests
+    // if (
+    //   window.location.hostname !== "hampusandersson.dev" &&
+    //   window.location.hostname !== "localhost"
+    // ) {
+    //   console.error("Unauthorized domain");
+    //   return;
+    // }
+
+    // Authenticate users anonymously
+    const auth = getAuth();
+    signInAnonymously(auth)
+      .then(() => console.log("Signed in anonymously"))
+      .catch((error) => console.error("Authentication failed:", error));
+
     const projectsCollection = collection(firestore, "projects");
     const unsubscribe = onSnapshot(projectsCollection, (snapshot) => {
       const projectsData = snapshot.docs.map((doc) => doc.data() as Project);
