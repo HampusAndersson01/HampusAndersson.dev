@@ -60,7 +60,7 @@ const saveToCache = (data: any) => {
   localStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: now }));
 };
 
-const authorizedDomains = ["hampusandersson.dev", "localhost"];
+const authorizedDomains = ["www.hampusandersson.dev"];
 
 const fetchProjects = async (
   setError: (error: string | null) => void,
@@ -69,16 +69,6 @@ const fetchProjects = async (
   blacklistedRepos: string[],
   forceUpdate = false
 ) => {
-  if (
-    process.env.NODE_ENV !== "development" &&
-    !authorizedDomains.includes(window.location.hostname)
-  ) {
-    console.error("Unauthorized domain");
-    setError("Unauthorized domain");
-    setLoading(false);
-    return;
-  }
-
   try {
     const cachedProjects = fetchFromCache();
     if (cachedProjects && !forceUpdate) {
@@ -230,7 +220,7 @@ export default function Projects() {
   useEffect(() => {
     if (
       process.env.NODE_ENV !== "development" &&
-      window.location.hostname !== "www.hampusandersson.dev"
+      !authorizedDomains.includes(window.location.hostname)
     ) {
       console.error("Unauthorized domain: ", window.location.hostname);
       return;
