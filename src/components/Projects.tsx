@@ -230,7 +230,7 @@ export default function Projects() {
   useEffect(() => {
     if (
       process.env.NODE_ENV !== "development" &&
-      window.location.hostname !== "hampusandersson.dev"
+      window.location.hostname !== "www.hampusandersson.dev"
     ) {
       console.error("Unauthorized domain: ", window.location.hostname);
       return;
