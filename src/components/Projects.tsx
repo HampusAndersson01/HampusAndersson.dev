@@ -14,6 +14,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { FaSearchPlus } from "react-icons/fa";
+import { getAuth, signInAnonymously } from "firebase/auth";
 
 interface Project {
   title: string;
@@ -59,6 +60,152 @@ const saveToCache = (data: any) => {
   localStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: now }));
 };
 
+const authorizedDomains = ["hampusandersson.dev", "localhost"];
+
+const fetchProjects = async (
+  setError: (error: string | null) => void,
+  setLoading: (loading: boolean) => void,
+  setProjects: (projects: Project[]) => void,
+  blacklistedRepos: string[],
+  forceUpdate = false
+) => {
+  if (
+    process.env.NODE_ENV !== "development" &&
+    !authorizedDomains.includes(window.location.hostname)
+  ) {
+    console.error("Unauthorized domain");
+    setError("Unauthorized domain");
+    setLoading(false);
+    return;
+  }
+
+  try {
+    const cachedProjects = fetchFromCache();
+    if (cachedProjects && !forceUpdate) {
+      setProjects(cachedProjects);
+      setLoading(false);
+      return;
+    }
+
+    const projectsCollection = collection(firestore, "projects");
+    const metadataDoc = doc(firestore, "metadata", "lastUpdated");
+
+    // Check the last updated timestamp
+    const lastUpdatedDoc = await getDoc(metadataDoc);
+    const lastUpdated = lastUpdatedDoc.exists()
+      ? lastUpdatedDoc.data()?.timestamp.toDate()
+      : null;
+    const now = new Date();
+
+    if (
+      !forceUpdate &&
+      lastUpdated &&
+      now.getTime() - lastUpdated.getTime() < 24 * 60 * 60 * 1000
+    ) {
+      // Use cached data if within 24 hours
+      const projectsSnapshot = await getDocs(projectsCollection);
+      const cachedProjects = projectsSnapshot.docs.map(
+        (doc) => doc.data() as Project
+      );
+      if (cachedProjects.length > 0) {
+        setProjects(cachedProjects);
+        setLoading(false); // Set loading to false
+        return;
+      }
+    }
+
+    // Fetch public repositories from GitHub
+    const response = await fetch(`${process.env.REACT_APP_GITHUB_API_URL}`);
+    if (!response.ok)
+      throw new Error(`GitHub API error: ${response.status}`);
+    const githubData = await response.json();
+
+    if (!Array.isArray(githubData))
+      throw new Error("Unexpected GitHub API response format");
+
+    // Fetch languages and check for demo.png for each repository
+    const fetchRepoDetails = async (repo: any) => {
+      const languagesResponse = await fetch(repo.languages_url);
+      if (!languagesResponse.ok)
+        throw new Error(`GitHub API error: ${languagesResponse.status}`);
+      const languagesData = await languagesResponse.json();
+      const languages = Object.keys(languagesData);
+
+      const contentsResponse = await fetch(`${repo.url}/contents`);
+      if (!contentsResponse.ok)
+        throw new Error(`GitHub API error: ${contentsResponse.status}`);
+      const contentsData = await contentsResponse.json();
+      const demoImage = contentsData.find(
+        (file: any) => file.name === "demo.png"
+      );
+
+      let imageUrl;
+      if (demoImage) {
+        // Try main branch first, then master if main fails
+        const mainBranchUrl = `https://raw.githubusercontent.com/${repo.owner.login}/${repo.name}/main/demo.png`;
+        const masterBranchUrl = `https://raw.githubusercontent.com/${repo.owner.login}/${repo.name}/master/demo.png`;
+
+        if (await checkImageUrl(mainBranchUrl)) {
+          imageUrl = mainBranchUrl;
+        } else if (await checkImageUrl(masterBranchUrl)) {
+          imageUrl = masterBranchUrl;
+        }
+      }
+
+      return {
+        title: formatTitle(repo.name),
+        description: repo.description || "",
+        languages: languages.length ? languages : [""],
+        githubLink: repo.html_url,
+        demoLink: repo.homepage || "",
+        image: imageUrl,
+      };
+    };
+
+    // Filter and format projects
+    const filteredData = githubData.filter(
+      (repo) => !blacklistedRepos.includes(repo.name)
+    );
+    const formattedProjects: Project[] = await Promise.all(
+      filteredData.map(fetchRepoDetails)
+    );
+
+    // Cache projects in Firestore
+    const cachePromises = formattedProjects.map((project) => {
+      const projectData = { ...project };
+      if (projectData.image === undefined) {
+        delete projectData.image;
+      }
+      return setDoc(doc(projectsCollection, project.title), projectData);
+    });
+    await Promise.all(cachePromises);
+
+    // Remove projects from Firestore that are not in the fetched data
+    const projectsSnapshot = await getDocs(projectsCollection);
+    const projectTitles = formattedProjects.map((project) => project.title);
+    const deletePromises = projectsSnapshot.docs
+      .filter((doc) => !projectTitles.includes(doc.id))
+      .map((doc) => deleteDoc(doc.ref));
+    await Promise.all(deletePromises);
+
+    // Update the last updated timestamp
+    await setDoc(metadataDoc, { timestamp: Timestamp.now() });
+
+    // Update state and cache
+    setProjects(formattedProjects);
+    saveToCache(formattedProjects);
+  } catch (error) {
+    console.error("Error fetching projects:", error);
+    if ((error as any).code === "permission-denied") {
+      setError("You do not have permission to access the projects data.");
+    } else {
+      setError("Failed to load projects. Please try again later.");
+    }
+  } finally {
+    setLoading(false); // Set loading to false
+  }
+};
+
 export default function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState<boolean>(true); // Add loading state
@@ -79,132 +226,30 @@ export default function Projects() {
     setEnlargedImage(null);
   };
 
-  const fetchProjects = async (forceUpdate = false) => {
-    try {
-      const cachedProjects = fetchFromCache();
-      if (cachedProjects && !forceUpdate) {
-        setProjects(cachedProjects);
-        setLoading(false);
-        return;
-      }
-
-      const projectsCollection = collection(firestore, "projects");
-      const metadataDoc = doc(firestore, "metadata", "lastUpdated");
-
-      // Check the last updated timestamp
-      const lastUpdatedDoc = await getDoc(metadataDoc);
-      const lastUpdated = lastUpdatedDoc.exists()
-        ? lastUpdatedDoc.data()?.timestamp.toDate()
-        : null;
-      const now = new Date();
-
-      if (
-        !forceUpdate &&
-        lastUpdated &&
-        now.getTime() - lastUpdated.getTime() < 24 * 60 * 60 * 1000
-      ) {
-        // Use cached data if within 24 hours
-        const projectsSnapshot = await getDocs(projectsCollection);
-        const cachedProjects = projectsSnapshot.docs.map(
-          (doc) => doc.data() as Project
-        );
-        if (cachedProjects.length > 0) {
-          setProjects(cachedProjects);
-          setLoading(false); // Set loading to false
-          return;
-        }
-      }
-
-      // Fetch public repositories from GitHub
-      const response = await fetch(`${process.env.REACT_APP_GITHUB_API_URL}`);
-      if (!response.ok)
-        throw new Error(`GitHub API error: ${response.status}`);
-      const githubData = await response.json();
-
-      if (!Array.isArray(githubData))
-        throw new Error("Unexpected GitHub API response format");
-
-      // Fetch languages and check for demo.png for each repository
-      const fetchRepoDetails = async (repo: any) => {
-        const languagesResponse = await fetch(repo.languages_url);
-        if (!languagesResponse.ok)
-          throw new Error(`GitHub API error: ${languagesResponse.status}`);
-        const languagesData = await languagesResponse.json();
-        const languages = Object.keys(languagesData);
-
-        const contentsResponse = await fetch(`${repo.url}/contents`);
-        if (!contentsResponse.ok)
-          throw new Error(`GitHub API error: ${contentsResponse.status}`);
-        const contentsData = await contentsResponse.json();
-        const demoImage = contentsData.find(
-          (file: any) => file.name === "demo.png"
-        );
-
-        let imageUrl;
-        if (demoImage) {
-          // Try main branch first, then master if main fails
-          const mainBranchUrl = `https://raw.githubusercontent.com/${repo.owner.login}/${repo.name}/main/demo.png`;
-          const masterBranchUrl = `https://raw.githubusercontent.com/${repo.owner.login}/${repo.name}/master/demo.png`;
-
-          if (await checkImageUrl(mainBranchUrl)) {
-            imageUrl = mainBranchUrl;
-          } else if (await checkImageUrl(masterBranchUrl)) {
-            imageUrl = masterBranchUrl;
-          }
-        }
-
-        return {
-          title: formatTitle(repo.name),
-          description: repo.description || "",
-          languages: languages.length ? languages : [""],
-          githubLink: repo.html_url,
-          demoLink: repo.homepage || "",
-          image: imageUrl,
-        };
-      };
-
-      // Filter and format projects
-      const filteredData = githubData.filter(
-        (repo) => !blacklistedRepos.includes(repo.name)
-      );
-      const formattedProjects: Project[] = await Promise.all(
-        filteredData.map(fetchRepoDetails)
-      );
-
-      // Cache projects in Firestore
-      const cachePromises = formattedProjects.map((project) => {
-        const projectData = { ...project };
-        if (projectData.image === undefined) {
-          delete projectData.image;
-        }
-        return setDoc(doc(projectsCollection, project.title), projectData);
-      });
-      await Promise.all(cachePromises);
-
-      // Remove projects from Firestore that are not in the fetched data
-      const projectsSnapshot = await getDocs(projectsCollection);
-      const projectTitles = formattedProjects.map((project) => project.title);
-      const deletePromises = projectsSnapshot.docs
-        .filter((doc) => !projectTitles.includes(doc.id))
-        .map((doc) => deleteDoc(doc.ref));
-      await Promise.all(deletePromises);
-
-      // Update the last updated timestamp
-      await setDoc(metadataDoc, { timestamp: Timestamp.now() });
-
-      // Update state and cache
-      setProjects(formattedProjects);
-      saveToCache(formattedProjects);
-    } catch (error) {
-      console.error("Error fetching projects:", error);
-      setError("Failed to load projects. Please try again later.");
-    } finally {
-      setLoading(false); // Set loading to false
-    }
-  };
-
   // Add console command to force update projects
   useEffect(() => {
+    if (
+      process.env.NODE_ENV !== "development" &&
+      window.location.hostname !== "hampusandersson.dev"
+    ) {
+      console.error("Unauthorized domain");
+      return;
+    }
+
+    // Authenticate users anonymously
+    const auth = getAuth();
+    signInAnonymously(auth)
+      .then(() => {
+        if (process.env.NODE_ENV === "development") {
+          console.log("Signed in anonymously");
+        }
+      })
+      .catch((error: any) => {
+        if (process.env.NODE_ENV === "development") {
+          console.error("Authentication failed:", error);
+        }
+      });
+
     const projectsCollection = collection(firestore, "projects");
     const unsubscribe = onSnapshot(projectsCollection, (snapshot) => {
       const projectsData = snapshot.docs.map((doc) => doc.data() as Project);
@@ -212,10 +257,11 @@ export default function Projects() {
       setLoading(false);
     });
 
-    fetchProjects();
+    fetchProjects(setError, setLoading, setProjects, blacklistedRepos);
 
     if (process.env.NODE_ENV === "development") {
-      (window as any).forceUpdateProjects = () => fetchProjects(true);
+      (window as any).forceUpdateProjects = () =>
+        fetchProjects(setError, setLoading, setProjects, blacklistedRepos, true);
       console.log(
         "Development mode: Use 'forceUpdateProjects()' in the console to force update projects."
       );
