@@ -229,7 +229,7 @@ export default function Projects() {
   // Add console command to force update projects
   useEffect(() => {
     if (
-      process.env.NODE_ENV !== "development" &&
+      process.env.NODE_ENV !== "development" ||
       window.location.hostname !== "hampusandersson.dev"
     ) {
       console.error("Unauthorized domain");
